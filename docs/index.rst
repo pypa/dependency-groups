@@ -6,9 +6,9 @@ Dependency Groups
 An implementation of Dependency Groups (`PEP 735 <https://peps.python.org/pep-0735/>`_).
 
 The source code is hosted in `a GitHub repo
-<https://github.com/sirosen/dependency-groups/>`_, and bugs and
+<https://github.com/pypa/dependency-groups/>`_, and bugs and
 features are tracked in the associated `issue tracker
-<https://github.com/sirosen/dependency-groups/issues/>`_.
+<https://github.com/pypa/dependency-groups/issues/>`_.
 
 .. toctree::
     :maxdepth: 2

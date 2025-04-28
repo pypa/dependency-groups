@@ -49,8 +49,8 @@ dependency-groups = "dependency_groups.__main__:main"
 cli = ["tomli; python_version<'3.11'"]
 
 [project.urls]
-source = "https://github.com/sirosen/dependency-groups"
-changelog = "https://github.com/sirosen/dependency-groups/blob/main/CHANGELOG.rst"
+source = "https://github.com/pypa/dependency-groups"
+changelog = "https://github.com/pypa/dependency-groups/blob/main/CHANGELOG.rst"
 documentation = "https://dependency-groups.readthedocs.io/"
 
 

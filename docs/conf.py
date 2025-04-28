@@ -19,7 +19,7 @@ intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
 }
 
-issues_github_path = "sirosen/dependency-groups"
+issues_github_path = "pypa/dependency-groups"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -31,7 +31,7 @@ html_theme = "furo"
 pygments_style = "friendly"
 pygments_dark_style = "monokai"  # this is a furo-specific option
 html_theme_options = {
-    "source_repository": "https://github.com/sirosen/dependency-groups/",
+    "source_repository": "https://github.com/pypa/dependency-groups/",
     "source_branch": "main",
     "source_directory": "docs/",
 }
