@@ -47,7 +47,7 @@ The ``lint-dependency-groups`` CLI is also available as a pre-commit hook:
 .. code-block:: yaml
 
     repos:
-      - repo: https://github.com/sirosen/dependency-groups
+      - repo: https://github.com/pypa/dependency-groups
         rev: 1.3.0
         hooks:
           - id: lint-dependency-groups
