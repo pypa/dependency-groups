@@ -48,6 +48,6 @@ The ``lint-dependency-groups`` CLI is also available as a pre-commit hook:
 
     repos:
       - repo: https://github.com/pypa/dependency-groups
-        rev: 1.3.0
+        rev: 1.3.1
         hooks:
           - id: lint-dependency-groups

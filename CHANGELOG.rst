@@ -4,6 +4,11 @@ CHANGELOG
 Unreleased
 ----------
 
+1.3.1
+-----
+
+- Fix a bug in which names in includes were not normalized before comparisons,
+  resulting in spurious ``LookupError``\s.
 - Optimize the behavior of the ``resolve()`` function on multiple groups.
 
 1.3.0
