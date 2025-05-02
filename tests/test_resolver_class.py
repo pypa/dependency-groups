@@ -127,3 +127,21 @@ def test_no_double_parse():
         assert len(deceived_parse) == 1
         assert isinstance(deceived_parse[0], DependencyGroupInclude)
         assert deceived_parse[0].include_group == "perfidy"
+
+
+@pytest.mark.parametrize("group_name_declared", ("foo-bar", "foo_bar", "foo..bar"))
+@pytest.mark.parametrize("group_name_used", ("foo-bar", "foo_bar", "foo..bar"))
+def test_normalized_name_is_used_for_include_group_lookups(
+    group_name_declared, group_name_used
+):
+    groups = {
+        group_name_declared: ["spam"],
+        "eggs": [{"include-group": group_name_used}],
+    }
+    resolver = DependencyGroupResolver(groups)
+
+    result = resolver.resolve("eggs")
+    assert len(result) == 1
+    assert isinstance(result[0], Requirement)
+    req = result[0]
+    assert req.name == "spam"
