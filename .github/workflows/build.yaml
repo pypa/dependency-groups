@@ -17,6 +17,7 @@ jobs:
       - uses: actions/setup-python@v5
         id: setup-python
         with:
+          allow-prereleases: true
           python-version: |
             3.8
             3.9
@@ -24,6 +25,7 @@ jobs:
             3.11
             3.12
             3.13
+            3.14
 
       # get the week of the year (1-52) for cache control
       # this ensures that at least weekly we'll test with a clear cache

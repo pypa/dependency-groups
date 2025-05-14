@@ -1,6 +1,6 @@
-import argparse
 import sys
 
+from ._argparse_compat import ArgumentParser
 from ._implementation import resolve
 from ._toml_compat import tomllib
 
@@ -13,7 +13,7 @@ def main() -> None:
         )
         raise SystemExit(2)
 
-    parser = argparse.ArgumentParser(
+    parser = ArgumentParser(
         description=(
             "A dependency-groups CLI. Prints out a resolved group, newline-delimited."
         )

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import argparse
 import sys
 
+from ._argparse_compat import ArgumentParser
 from ._implementation import DependencyGroupResolver
 from ._toml_compat import tomllib
 
@@ -15,7 +15,7 @@ def main(*, argv: list[str] | None = None) -> None:
         )
         raise SystemExit(2)
 
-    parser = argparse.ArgumentParser(
+    parser = ArgumentParser(
         description=(
             "Lint Dependency Groups for validity. "
             "This will eagerly load and check all of your Dependency Groups."
