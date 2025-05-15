@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-import argparse
 import subprocess
 import sys
 
+from ._argparse_compat import ArgumentParser
 from ._implementation import DependencyGroupResolver
 from ._toml_compat import tomllib
 
@@ -20,7 +20,7 @@ def main(*, argv: list[str] | None = None) -> None:
         )
         raise SystemExit(2)
 
-    parser = argparse.ArgumentParser(description="Install Dependency Groups.")
+    parser = ArgumentParser(description="Install Dependency Groups.")
     parser.add_argument(
         "DEPENDENCY_GROUP", nargs="+", help="The dependency groups to install."
     )
