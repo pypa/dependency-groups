@@ -16,7 +16,7 @@ name = "dependency-groups"
 version = "1.3.1"
 description = 'A tool for resolving PEP 735 Dependency Group data'
 readme = "README.rst"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 license = "MIT"
 license-files = ["LICENSE.txt"]
 keywords = []
@@ -26,7 +26,6 @@ authors = [
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
@@ -112,7 +111,6 @@ env_list = [
     "covclean",
     "covcombine",
     "covreport",
-    "3.8",
     "3.9",
     "3.10",
     "3.11",
@@ -122,7 +120,7 @@ env_list = [
 ]
 
 [tool.tox.labels]
-ci = ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "covcombine", "covreport"]
+ci = ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "covcombine", "covreport"]
 ci-mypy = ["mypy-py38", "mypy-py313"]
 ci-package-check = ["twine-check"]
 
@@ -145,7 +143,7 @@ description = "Combine coverage outputs"
 skip_install = true
 dependency_groups = ["coverage"]
 commands = [["coverage", "combine"]]
-depends = ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+depends = ["3.9", "3.10", "3.11", "3.12", "3.13"]
 
 [tool.tox.env.covreport]
 description = "Report on combined coverage outputs"
@@ -156,7 +154,7 @@ commands = [["coverage", "report"]]
 depends = ["covcombine"]
 
 [tool.tox.env.lint]
-description = "Run linterse and formatters"
+description = "Run linters and formatters"
 dependency_groups = ["lint"]
 commands = [["pre-commit", "run", "-a", {replace = "posargs", extend = true}]]
 depends = []

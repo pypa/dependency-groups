@@ -4,6 +4,9 @@ CHANGELOG
 Unreleased
 ----------
 
+- Add support for Python 3.14
+- Remove support for Python 3.8
+
 1.3.1
 -----
 
