@@ -19,7 +19,6 @@ jobs:
         with:
           allow-prereleases: true
           python-version: |
-            3.8
             3.9
             3.10
             3.11
@@ -47,7 +46,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - pythons: ["3.8", "3.13"]
+          - pythons: ["3.9", "3.13"]
             tox_label: "ci-mypy"
           - pythons: ["3.13"]
             tox_label: "ci-package-check"
