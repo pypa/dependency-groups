@@ -102,3 +102,94 @@ known_first_party = ["mddj"]
 
 [tool.check-sdist]
 git-only = [".*", "Makefile", "docs/*", "scripts/*"]
+
+
+[tool.tox]
+requires = ["tox>=4.22"]
+env_list = [
+    "lint",
+    "mypy",
+    "covclean",
+    "covcombine",
+    "covreport",
+    "3.8",
+    "3.9",
+    "3.10",
+    "3.11",
+    "3.12",
+    "3.13",
+    "3.14",
+]
+
+[tool.tox.labels]
+ci = ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "covcombine", "covreport"]
+ci-mypy = ["mypy-py38", "mypy-py313"]
+ci-package-check = ["twine-check"]
+
+[tool.tox.env_run_base]
+description = "Run tests and coverage"
+package = "wheel"
+wheel_build_env = "build_wheel"
+dependency_groups = ["test"]
+commands = [["coverage", "run", "-m", "pytest", "-v", {replace = "posargs", extend = true}]]
+depends = ["clean"]
+
+[tool.tox.env.covclean]
+description = "Clean coverage outputs"
+skip_install = true
+dependency_groups = ["coverage"]
+commands = [["coverage", "erase"]]
+
+[tool.tox.env.covcombine]
+description = "Combine coverage outputs"
+skip_install = true
+dependency_groups = ["coverage"]
+commands = [["coverage", "combine"]]
+depends = ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+
+[tool.tox.env.covreport]
+description = "Report on combined coverage outputs"
+skip_install = true
+dependency_groups = ["coverage"]
+commands_pre = [["coverage", "html", "--fail-under=0"]]
+commands = [["coverage", "report"]]
+depends = ["covcombine"]
+
+[tool.tox.env.lint]
+description = "Run linterse and formatters"
+dependency_groups = ["lint"]
+commands = [["pre-commit", "run", "-a", {replace = "posargs", extend = true}]]
+depends = []
+
+[tool.tox.env.mypy]
+package = "skip"
+description = "Run static type checking under {base_python}"
+dependency_groups = ["typing"]
+commands = [["mypy", "src/", {replace = "posargs", extend = true} ]]
+depends = []
+
+[tool.tox.env.mypy-py38]
+base = ["tool.tox.env.mypy"]
+
+[tool.tox.env.mypy-py313]
+base = ["env.mypy"]
+
+[tool.tox.env.twine-check]
+description = "check the metadata on a package build"
+allowlist_externals = ["rm"]
+dependency_groups = ["build"]
+commands_pre = [["rm", "-rf", "dist/"]]
+# check that twine validating package data works
+commands = [["python", "-m", "build"],
+           ["twine", "check", "dist/*"]]
+
+
+[tool.tox.env.docs]
+description = "build docs with sphinx"
+basepython = ["python3.12"]
+dependency_groups = ["docs"]
+allowlist_externals = ["rm"]
+changedir = "docs/"
+# clean the build dir before rebuilding
+commands_pre = [["rm", "-rf", "_build/"]]
+commands = [["sphinx-build", "-d", "_build/doctrees", "-b", "dirhtml", "-W", ".", "_build/dirhtml", {replace = "posargs", extend = true}]]
