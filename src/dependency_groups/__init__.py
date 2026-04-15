@@ -3,6 +3,7 @@ from ._implementation import (
     DependencyGroupInclude,
     DependencyGroupResolver,
     resolve,
+    resolve_all,
 )
 
 __all__ = (
@@ -10,4 +11,5 @@ __all__ = (
     "DependencyGroupInclude",
     "DependencyGroupResolver",
     "resolve",
+    "resolve_all",
 )
