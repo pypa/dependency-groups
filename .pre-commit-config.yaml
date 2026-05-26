@@ -15,11 +15,6 @@ repos:
     rev: 0.31.0
     hooks:
       - id: check-github-workflows
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v3.19.1
-    hooks:
-      - id: pyupgrade
-        args: ["--py39-plus"]
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.11.8
     hooks:
