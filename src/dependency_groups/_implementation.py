@@ -13,14 +13,21 @@ def _normalize_name(name: str) -> str:
 
 def _normalize_group_names(
     dependency_groups: Mapping[str, str | Mapping[str, str]],
-) -> Mapping[str, str | Mapping[str, str]]:
+) -> tuple[Mapping[str, str | Mapping[str, str]], Mapping[str, str]]:
+    """
+    Normalize group names and return both normalized groups and reverse mapping.
+
+    Returns a tuple of (normalized_groups, normalized_to_original).
+    """
     original_names: dict[str, list[str]] = {}
     normalized_groups = {}
+    normalized_to_original: dict[str, str] = {}
 
     for group_name, value in dependency_groups.items():
         normed_group_name = _normalize_name(group_name)
         original_names.setdefault(normed_group_name, []).append(group_name)
         normalized_groups[normed_group_name] = value
+        normalized_to_original[normed_group_name] = group_name
 
     errors = []
     for normed_name, names in original_names.items():
@@ -29,7 +36,7 @@ def _normalize_group_names(
     if errors:
         raise ValueError(f"Duplicate dependency group names: {', '.join(errors)}")
 
-    return normalized_groups
+    return normalized_groups, normalized_to_original
 
 
 @dataclasses.dataclass
@@ -75,7 +82,9 @@ class DependencyGroupResolver:
     ) -> None:
         if not isinstance(dependency_groups, Mapping):
             raise TypeError("Dependency Groups table is not a mapping")
-        self.dependency_groups = _normalize_group_names(dependency_groups)
+        self.dependency_groups, self._normalized_to_original = _normalize_group_names(
+            dependency_groups
+        )
         # a map of group names to parsed data
         self._parsed_groups: dict[
             str, tuple[Requirement | DependencyGroupInclude, ...]
@@ -189,6 +198,25 @@ class DependencyGroupResolver:
         self._resolve_cache[group] = tuple(resolved_group)
         return self._resolve_cache[group]
 
+    def resolve_all(self) -> Mapping[str, tuple[Requirement, ...]]:
+        """
+        Resolve all dependency groups, returning a mapping of normalized group
+        names to resolved requirements.
+
+        This is more efficient than calling resolve() on each group individually
+        because it avoids repeated work when groups share common includes.
+
+        :raises TypeError: if the data appears to be the wrong types
+        :raises ValueError: if the data does not appear to be valid dependency group
+            data
+        :raises packaging.requirements.InvalidRequirement: if a specifier is not valid
+        """
+        # Resolve all groups that haven't been resolved yet
+        for group in self.dependency_groups:
+            self._resolve(group, group)
+
+        return dict(self._resolve_cache)
+
 
 def resolve(
     dependency_groups: Mapping[str, str | Mapping[str, str]], /, *groups: str
@@ -207,3 +235,44 @@ def resolve(
     """
     resolver = DependencyGroupResolver(dependency_groups)
     return tuple(str(r) for group in groups for r in resolver.resolve(group))
+
+
+def resolve_all(
+    dependency_groups: Mapping[str, str | Mapping[str, str]],
+    /,
+    *,
+    normalize: bool = False,
+) -> Mapping[str, tuple[str, ...]]:
+    """
+    Resolve all dependency groups, returning a mapping of group names to
+    resolved requirements.
+
+    :param dependency_groups: the parsed contents of the ``[dependency-groups]`` table
+        from ``pyproject.toml``
+    :param normalize: if True normalize names, otherwise use original names
+        when returning keys, but still normalize for lookup. Defaults to False.
+
+    :raises TypeError: if the inputs appear to be the wrong types
+    :raises ValueError: if the data does not appear to be valid dependency group data
+    :raises packaging.requirements.InvalidRequirement: if a specifier is not valid
+
+    Example usage::
+
+        resolved = dependency_groups.resolve_all(dep_groups)
+        # {'test': ('pytest', 'sqlalchemy'), 'runtime': ('sqlalchemy',)}
+    """
+    resolver = DependencyGroupResolver(dependency_groups)
+    resolved = resolver.resolve_all()
+    if normalize:
+        return {
+            group: tuple(str(r) for r in requirements)
+            for group, requirements in resolved.items()
+        }
+    else:
+        # Map back to original names
+        return {
+            resolver._normalized_to_original.get(group, group): tuple(
+                str(r) for r in requirements
+            )
+            for group, requirements in resolved.items()
+        }
