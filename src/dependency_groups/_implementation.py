@@ -12,8 +12,8 @@ def _normalize_name(name: str) -> str:
 
 
 def _normalize_group_names(
-    dependency_groups: Mapping[str, str | Mapping[str, str]],
-) -> tuple[Mapping[str, str | Mapping[str, str]], Mapping[str, str]]:
+    dependency_groups: Mapping[str, list[str | Mapping[str, str]]],
+) -> tuple[Mapping[str, list[str | Mapping[str, str]]], Mapping[str, str]]:
     """
     Normalize group names and return both normalized groups and reverse mapping.
 
@@ -78,7 +78,7 @@ class DependencyGroupResolver:
 
     def __init__(
         self,
-        dependency_groups: Mapping[str, str | Mapping[str, str]],
+        dependency_groups: Mapping[str, list[str | Mapping[str, str]]],
     ) -> None:
         if not isinstance(dependency_groups, Mapping):
             raise TypeError("Dependency Groups table is not a mapping")
@@ -219,7 +219,7 @@ class DependencyGroupResolver:
 
 
 def resolve(
-    dependency_groups: Mapping[str, str | Mapping[str, str]], /, *groups: str
+    dependency_groups: Mapping[str, list[str | Mapping[str, str]]], /, *groups: str
 ) -> tuple[str, ...]:
     """
     Resolve a dependency group to a tuple of requirements, as strings.
@@ -238,7 +238,7 @@ def resolve(
 
 
 def resolve_all(
-    dependency_groups: Mapping[str, str | Mapping[str, str]],
+    dependency_groups: Mapping[str, list[str | Mapping[str, str]]],
     /,
     *,
     normalize: bool = False,

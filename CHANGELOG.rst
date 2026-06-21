@@ -6,6 +6,7 @@ Unreleased
 
 - Add support for Python 3.14
 - Remove support for Python 3.8
+- Correct type of dependency_groups
 
 1.3.1
 -----
