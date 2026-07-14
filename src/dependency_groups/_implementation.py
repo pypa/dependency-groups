@@ -20,7 +20,7 @@ def _normalize_group_names(
     Returns a tuple of (normalized_groups, normalized_to_original).
     """
     original_names: dict[str, list[str]] = {}
-    normalized_groups = {}
+    normalized_groups: dict[str, list[str | Mapping[str, str]]] = {}
     normalized_to_original: dict[str, str] = {}
 
     for group_name, value in dependency_groups.items():
