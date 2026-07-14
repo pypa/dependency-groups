@@ -6,7 +6,8 @@ Unreleased
 
 - Add support for Python 3.14
 - Remove support for Python 3.8
-- Correct type of dependency_groups
+- Correct the type of the ``dependency_groups`` parameter to ``resolve()``,
+  ``resolve_all()``, and ``DependencyGroupsResolver()``.
 
 1.3.1
 -----
