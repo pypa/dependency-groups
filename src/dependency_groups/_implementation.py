@@ -140,6 +140,10 @@ class DependencyGroupResolver:
             raise LookupError(f"Dependency group '{group}' not found")
 
         raw_group = self.dependency_groups[group]
+        if isinstance(raw_group, str):
+            raise TypeError(
+                f"Dependency group '{group}' contained a string rather than a sequence."
+            )
         if not isinstance(raw_group, Sequence):
             raise TypeError(f"Dependency group '{group}' is not a sequence")
 
