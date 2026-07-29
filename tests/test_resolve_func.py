@@ -144,7 +144,10 @@ def test_cyclic_include_ring_under_root():
 
 def test_non_list_data():
     groups = {"test": "pytest, coverage"}
-    with pytest.raises(TypeError, match="Dependency group 'test' is not a list"):
+    with pytest.raises(
+        TypeError,
+        match="Dependency group 'test' contained a string rather than a sequence.",
+    ):
         resolve(groups, "test")
 
 

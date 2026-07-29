@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import dataclasses
 import re
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 
 from packaging.requirements import Requirement
 
@@ -12,15 +12,15 @@ def _normalize_name(name: str) -> str:
 
 
 def _normalize_group_names(
-    dependency_groups: Mapping[str, str | Mapping[str, str]],
-) -> tuple[Mapping[str, str | Mapping[str, str]], Mapping[str, str]]:
+    dependency_groups: Mapping[str, Sequence[str | Mapping[str, str]]],
+) -> tuple[Mapping[str, Sequence[str | Mapping[str, str]]], Mapping[str, str]]:
     """
     Normalize group names and return both normalized groups and reverse mapping.
 
     Returns a tuple of (normalized_groups, normalized_to_original).
     """
     original_names: dict[str, list[str]] = {}
-    normalized_groups = {}
+    normalized_groups: dict[str, Sequence[str | Mapping[str, str]]] = {}
     normalized_to_original: dict[str, str] = {}
 
     for group_name, value in dependency_groups.items():
@@ -78,7 +78,7 @@ class DependencyGroupResolver:
 
     def __init__(
         self,
-        dependency_groups: Mapping[str, str | Mapping[str, str]],
+        dependency_groups: Mapping[str, Sequence[str | Mapping[str, str]]],
     ) -> None:
         if not isinstance(dependency_groups, Mapping):
             raise TypeError("Dependency Groups table is not a mapping")
@@ -140,8 +140,12 @@ class DependencyGroupResolver:
             raise LookupError(f"Dependency group '{group}' not found")
 
         raw_group = self.dependency_groups[group]
-        if not isinstance(raw_group, list):
-            raise TypeError(f"Dependency group '{group}' is not a list")
+        if isinstance(raw_group, str):
+            raise TypeError(
+                f"Dependency group '{group}' contained a string rather than a sequence."
+            )
+        if not isinstance(raw_group, Sequence):
+            raise TypeError(f"Dependency group '{group}' is not a sequence")
 
         elements: list[Requirement | DependencyGroupInclude] = []
         for item in raw_group:
@@ -219,7 +223,7 @@ class DependencyGroupResolver:
 
 
 def resolve(
-    dependency_groups: Mapping[str, str | Mapping[str, str]], /, *groups: str
+    dependency_groups: Mapping[str, Sequence[str | Mapping[str, str]]], /, *groups: str
 ) -> tuple[str, ...]:
     """
     Resolve a dependency group to a tuple of requirements, as strings.
@@ -238,7 +242,7 @@ def resolve(
 
 
 def resolve_all(
-    dependency_groups: Mapping[str, str | Mapping[str, str]],
+    dependency_groups: Mapping[str, Sequence[str | Mapping[str, str]]],
     /,
     *,
     normalize: bool = False,
