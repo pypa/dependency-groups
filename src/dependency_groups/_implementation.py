@@ -140,6 +140,8 @@ class DependencyGroupResolver:
             raise LookupError(f"Dependency group '{group}' not found")
 
         raw_group = self.dependency_groups[group]
+        if not isinstance(raw_group, Sequence):
+            raise TypeError(f"Dependency group '{group}' is not a sequence")
 
         elements: list[Requirement | DependencyGroupInclude] = []
         for item in raw_group:
