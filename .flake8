@@ -1,4 +1,2 @@
 [flake8]
-exclude = .git,.tox,__pycache__,.eggs,dist,.venv*
-max-line-length = 88
-extend-ignore = W503,W504,E203
+select = TYT

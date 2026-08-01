@@ -37,7 +37,7 @@ Unreleased
 ----------
 
 {new_version}
-{'-' * len(new_version)}
+{"-" * len(new_version)}
 
 """,
         content,
