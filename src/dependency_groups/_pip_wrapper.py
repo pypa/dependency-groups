@@ -55,6 +55,10 @@ def main(*, argv: list[str] | None = None) -> None:
             print(f"  {msg}")
         sys.exit(1)
 
+    if not resolved:
+        print("Nothing to install")
+        return
+
     _invoke_pip(resolved)
 
 
