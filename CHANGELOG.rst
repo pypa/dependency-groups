@@ -11,6 +11,9 @@ Unreleased
 - Raise a clear ``TypeError`` when an ``include-group`` value is not a string
   (was a cryptic ``TypeError`` from name normalization), and accept any
   ``Mapping`` for include items, not only ``dict``.
+- Fix a bug in which ``pip-install-dependency-groups`` failed when the
+  resolved groups were empty. It now prints ``Nothing to install`` and exits
+  normally.
 
 1.3.1
 -----
