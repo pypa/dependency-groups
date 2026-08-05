@@ -166,6 +166,25 @@ def test_unknown_object_shape(item):
         resolve(groups, "test")
 
 
+def test_non_str_include_group_value():
+    groups = {"test": [{"include-group": 5}]}
+    with pytest.raises(ValueError, match="Invalid dependency group item:"):
+        resolve(groups, "test")
+
+
+def test_mapping_include_group_item():
+    import types
+
+    groups = {
+        "test": [
+            "pytest",
+            types.MappingProxyType({"include-group": "runtime"}),
+        ],
+        "runtime": ["sqlalchemy"],
+    }
+    assert set(resolve(groups, "test")) == {"pytest", "sqlalchemy"}
+
+
 def test_resolve_all_empty():
     groups = {}
     assert resolve_all(groups) == {}
