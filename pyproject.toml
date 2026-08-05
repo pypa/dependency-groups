@@ -32,6 +32,7 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
@@ -124,10 +125,11 @@ env_list = [
     "3.12",
     "3.13",
     "3.14",
+    "3.15",
 ]
 
 [tool.tox.labels]
-ci = ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "covcombine", "covreport"]
+ci = ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "3.15", "covcombine", "covreport"]
 ci-mypy = ["mypy-py39", "mypy-py313"]
 ci-package-check = ["twine-check"]
 
@@ -150,7 +152,7 @@ description = "Combine coverage outputs"
 skip_install = true
 dependency_groups = ["coverage"]
 commands = [["coverage", "combine"]]
-depends = ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+depends = ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "3.15"]
 
 [tool.tox.env.covreport]
 description = "Report on combined coverage outputs"
