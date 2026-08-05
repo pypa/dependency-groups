@@ -154,11 +154,15 @@ class DependencyGroupResolver:
                 # valid PEP 508 Dependency Specifier
                 # raises InvalidRequirement on failure
                 elements.append(Requirement(item))
-            elif isinstance(item, dict):
+            elif isinstance(item, Mapping):
                 if tuple(item.keys()) != ("include-group",):
                     raise ValueError(f"Invalid dependency group item: {item}")
 
                 include_group = next(iter(item.values()))
+                if not isinstance(include_group, str):
+                    raise TypeError(
+                        f"Invalid include-group value, must be a string: {item}"
+                    )
                 elements.append(DependencyGroupInclude(include_group=include_group))
             else:
                 raise ValueError(f"Invalid dependency group item: {item}")

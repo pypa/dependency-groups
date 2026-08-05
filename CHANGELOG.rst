@@ -8,6 +8,9 @@ Unreleased
 - Remove support for Python 3.8
 - Correct the type of the ``dependency_groups`` parameter to ``resolve()``,
   ``resolve_all()``, and ``DependencyGroupsResolver()``.
+- Raise a clear ``TypeError`` when an ``include-group`` value is not a string
+  (was a cryptic ``TypeError`` from name normalization), and accept any
+  ``Mapping`` for include items, not only ``dict``.
 
 1.3.1
 -----
