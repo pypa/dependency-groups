@@ -35,9 +35,10 @@ def _normalize_group_names(
     if errors:
         raise ValueError(f"Duplicate dependency group names: {', '.join(errors)}")
 
-    return normalized_groups, {
+    normalized_to_original = {
         normed_name: names[0] for normed_name, names in original_names.items()
     }
+    return normalized_groups, normalized_to_original
 
 
 @dataclasses.dataclass
