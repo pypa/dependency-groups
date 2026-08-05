@@ -168,7 +168,9 @@ def test_unknown_object_shape(item):
 
 def test_non_str_include_group_value():
     groups = {"test": [{"include-group": 5}]}
-    with pytest.raises(ValueError, match="Invalid dependency group item:"):
+    with pytest.raises(
+        TypeError, match="Invalid include-group value, must be a string:"
+    ):
         resolve(groups, "test")
 
 

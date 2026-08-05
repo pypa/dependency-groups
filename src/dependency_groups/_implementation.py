@@ -160,7 +160,9 @@ class DependencyGroupResolver:
 
                 include_group = next(iter(item.values()))
                 if not isinstance(include_group, str):
-                    raise ValueError(f"Invalid dependency group item: {item}")
+                    raise TypeError(
+                        f"Invalid include-group value, must be a string: {item}"
+                    )
                 elements.append(DependencyGroupInclude(include_group=include_group))
             else:
                 raise ValueError(f"Invalid dependency group item: {item}")
