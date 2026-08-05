@@ -25,6 +25,7 @@ jobs:
             3.12
             3.13
             3.14
+            3.15
 
       # get the week of the year (1-52) for cache control
       # this ensures that at least weekly we'll test with a clear cache
