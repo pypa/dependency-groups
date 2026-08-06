@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import sys
 
 from ._argparse_compat import ArgumentParser
@@ -5,7 +7,7 @@ from ._implementation import resolve
 from ._toml_compat import tomllib
 
 
-def main() -> None:
+def main(*, argv: list[str] | None = None) -> None:
     if tomllib is None:
         print(
             "Usage error: dependency-groups CLI requires tomli or Python 3.11+",
@@ -38,7 +40,7 @@ def main() -> None:
         action="store_true",
         help="List the available dependency groups",
     )
-    args = parser.parse_args()
+    args = parser.parse_args(argv if argv is not None else sys.argv[1:])
 
     with open(args.pyproject_file, "rb") as fp:
         pyproject = tomllib.load(fp)
@@ -46,13 +48,12 @@ def main() -> None:
     dependency_groups_raw = pyproject.get("dependency-groups", {})
 
     if args.list:
-        print(*dependency_groups_raw.keys())
-        return
-    if not args.GROUP_NAME:
+        content = " ".join(dependency_groups_raw.keys())
+    elif not args.GROUP_NAME:
         print("A GROUP_NAME is required", file=sys.stderr)
         raise SystemExit(3)
-
-    content = "\n".join(resolve(dependency_groups_raw, *args.GROUP_NAME))
+    else:
+        content = "\n".join(resolve(dependency_groups_raw, *args.GROUP_NAME))
 
     if args.output is None or args.output == "-":
         print(content)
