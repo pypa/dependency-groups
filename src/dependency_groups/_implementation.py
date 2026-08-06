@@ -21,21 +21,23 @@ def _normalize_group_names(
     """
     original_names: dict[str, list[str]] = {}
     normalized_groups: dict[str, Sequence[str | Mapping[str, str]]] = {}
-    normalized_to_original: dict[str, str] = {}
 
     for group_name, value in dependency_groups.items():
         normed_group_name = _normalize_name(group_name)
         original_names.setdefault(normed_group_name, []).append(group_name)
         normalized_groups[normed_group_name] = value
-        normalized_to_original[normed_group_name] = group_name
 
-    errors = []
-    for normed_name, names in original_names.items():
-        if len(names) > 1:
-            errors.append(f"{normed_name} ({', '.join(names)})")
+    errors = [
+        f"{normed_name} ({', '.join(names)})"
+        for normed_name, names in original_names.items()
+        if len(names) > 1
+    ]
     if errors:
         raise ValueError(f"Duplicate dependency group names: {', '.join(errors)}")
 
+    normalized_to_original = {
+        normed_name: names[0] for normed_name, names in original_names.items()
+    }
     return normalized_groups, normalized_to_original
 
 
@@ -167,8 +169,9 @@ class DependencyGroupResolver:
             else:
                 raise ValueError(f"Invalid dependency group item: {item}")
 
-        self._parsed_groups[group] = tuple(elements)
-        return self._parsed_groups[group]
+        parsed = tuple(elements)
+        self._parsed_groups[group] = parsed
+        return parsed
 
     def _resolve(self, group: str, requested_group: str) -> tuple[Requirement, ...]:
         """
@@ -203,8 +206,9 @@ class DependencyGroupResolver:
                     f"Invalid dependency group item after parse: {item}"
                 )
 
-        self._resolve_cache[group] = tuple(resolved_group)
-        return self._resolve_cache[group]
+        resolved = tuple(resolved_group)
+        self._resolve_cache[group] = resolved
+        return resolved
 
     def resolve_all(self) -> Mapping[str, tuple[Requirement, ...]]:
         """
