@@ -14,6 +14,7 @@ Unreleased
 - Fix a bug in which ``pip-install-dependency-groups`` failed when the
   resolved groups were empty. It now prints ``Nothing to install`` and exits
   normally.
+- `dependency-groups --list` now respects the `-o`/`--output` option.
 
 1.3.1
 -----
