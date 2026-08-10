@@ -8,7 +8,7 @@ import pytest
 
 if t.TYPE_CHECKING:
     import os
-    from collections.abc import Mapping
+    from collections.abc import Mapping, Sequence
 
     # the "dependency_groups" argument type of the library APIs
     Groups = Mapping[str, Sequence[t.Union[str, Mapping[str, str]]]]
