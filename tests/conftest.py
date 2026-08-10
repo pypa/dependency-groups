@@ -11,7 +11,7 @@ if t.TYPE_CHECKING:
     from collections.abc import Mapping
 
     # the "dependency_groups" argument type of the library APIs
-    Groups = dict[str, list[t.Union[str, Mapping[str, str]]]]
+    Groups = Mapping[str, Sequence[t.Union[str, Mapping[str, str]]]]
 
 
 class CliEntryPoint(t.Protocol):
