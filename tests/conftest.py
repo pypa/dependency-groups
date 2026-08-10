@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import dataclasses
+import functools
 import typing as t
 
 import pytest
@@ -43,8 +44,7 @@ class CliRunner:
 
 
 @pytest.fixture
-def runner_factory(capsys: pytest.CaptureFixture[str]):
-    def bind(entry_point: CliEntryPoint, /) -> CliRunner:
-        return CliRunner(entry_point, capsys)
-
-    return bind
+def runner_factory(
+    capsys: pytest.CaptureFixture[str],
+) -> t.Callable[[CliEntryPoint], CliRunner]:
+    return functools.partial(CliRunner, capsys=capsys)
