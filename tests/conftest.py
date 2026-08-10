@@ -6,6 +6,13 @@ import typing as t
 
 import pytest
 
+if t.TYPE_CHECKING:
+    import os
+    from collections.abc import Mapping
+
+    # the "dependency_groups" argument type of the library APIs
+    Groups = dict[str, list[t.Union[str, Mapping[str, str]]]]
+
 
 class CliEntryPoint(t.Protocol):
     def __call__(self, *, argv: list[str] | None = None) -> None: ...
@@ -23,12 +30,15 @@ class CliRunner:
     entry_point: CliEntryPoint
     capsys: pytest.CaptureFixture[str]
 
-    def invoke(self, *argv: str, expect_exit_code: int | None = 0) -> CLIResult:
+    def __call__(
+        self, *argv: str | os.PathLike[str], expect_exit_code: int | None = 0
+    ) -> CLIResult:
         __tracebackhide__ = True
+        rc = 0
         try:
             self.entry_point(argv=[str(arg) for arg in argv])
-            rc = 0
         except SystemExit as e:
+            assert isinstance(e.code, int), f"CLI exited with non-int code: {e.code!r}"
             rc = e.code
 
         stdio = self.capsys.readouterr()
@@ -43,8 +53,9 @@ class CliRunner:
         return result
 
 
+RunnerFactory = t.Callable[[CliEntryPoint], CliRunner]
+
+
 @pytest.fixture
-def runner_factory(
-    capsys: pytest.CaptureFixture[str],
-) -> t.Callable[[CliEntryPoint], CliRunner]:
+def runner_factory(capsys: pytest.CaptureFixture[str]) -> RunnerFactory:
     return functools.partial(CliRunner, capsys=capsys)

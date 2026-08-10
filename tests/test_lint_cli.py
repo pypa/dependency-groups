@@ -1,14 +1,23 @@
+from __future__ import annotations
+
+import typing as t
+
 import pytest
+
+if t.TYPE_CHECKING:
+    import pathlib
+
+    from conftest import CliRunner, RunnerFactory
 
 
 @pytest.fixture
-def run(runner_factory):
+def run(runner_factory: RunnerFactory) -> CliRunner:
     from dependency_groups._lint_dependency_groups import main as cli_main
 
-    return runner_factory(cli_main).invoke
+    return runner_factory(cli_main)
 
 
-def test_lint_no_groups_ok(run, tmp_path):
+def test_lint_no_groups_ok(run: CliRunner, tmp_path: pathlib.Path) -> None:
     tomlfile = tmp_path / "pyproject.toml"
     tomlfile.write_text("[project]\n")
 
@@ -17,7 +26,7 @@ def test_lint_no_groups_ok(run, tmp_path):
     assert res.stderr == ""
 
 
-def test_lint_bad_group_item(run, tmp_path):
+def test_lint_bad_group_item(run: CliRunner, tmp_path: pathlib.Path) -> None:
     tomlfile = tmp_path / "pyproject.toml"
     tomlfile.write_text(
         """\
@@ -37,7 +46,9 @@ errors encountered while examining dependency groups:
     assert res.stderr == ""
 
 
-def test_no_toml_failure(run, tmp_path, monkeypatch):
+def test_no_toml_failure(
+    run: CliRunner, tmp_path: pathlib.Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     monkeypatch.setattr("dependency_groups._lint_dependency_groups.tomllib", None)
 
     tomlfile = tmp_path / "pyproject.toml"
@@ -47,7 +58,7 @@ def test_no_toml_failure(run, tmp_path, monkeypatch):
     assert "requires tomli or Python 3.11+" in res.stderr
 
 
-def test_dependency_groups_list_format(run, tmp_path):
+def test_dependency_groups_list_format(run: CliRunner, tmp_path: pathlib.Path) -> None:
     tomlfile = tmp_path / "pyproject.toml"
     tomlfile.write_text("[[dependency-groups]]")
 

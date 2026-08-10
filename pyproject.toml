@@ -7,7 +7,7 @@ coverage = ["coverage[toml]"]
 test = ["pytest", {include-group = "coverage"}]
 docs = ["sphinx>=8.1", "sphinx-issues>=5", "furo"]
 lint = ["pre-commit"]
-typing = ["mypy", "packaging"]
+typing = ["mypy", "packaging", "pytest"]
 build = ["twine", "build"]
 dev = [{include-group = "test"}]
 
@@ -94,7 +94,7 @@ exclude_lines = [
 strict = true
 ignore_missing_imports = true
 disallow_subclassing_any = false
-files = ["src"]
+files = ["src", "tests"]
 
 [tool.ruff]
 line-length = 88
@@ -172,7 +172,7 @@ depends = []
 package = "skip"
 description = "Run static type checking under {base_python}"
 dependency_groups = ["typing"]
-commands = [["mypy", "src/", {replace = "posargs", extend = true} ]]
+commands = [["mypy", {replace = "posargs", extend = true} ]]
 depends = []
 
 [tool.tox.env.mypy-py39]

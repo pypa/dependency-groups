@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+import typing as t
 import unittest.mock
 
 import pytest
@@ -5,26 +8,29 @@ from packaging.requirements import Requirement
 
 from dependency_groups import DependencyGroupInclude, DependencyGroupResolver
 
+if t.TYPE_CHECKING:
+    from conftest import Groups
 
-def test_resolver_init_handles_bad_type():
+
+def test_resolver_init_handles_bad_type() -> None:
     with pytest.raises(TypeError):
-        DependencyGroupResolver([])
+        DependencyGroupResolver([])  # type: ignore[arg-type]
 
 
-def test_resolver_init_catches_normalization_conflict():
+def test_resolver_init_catches_normalization_conflict() -> None:
     groups = {"test": ["pytest"], "Test": ["pytest", "coverage"]}
     with pytest.raises(ValueError, match="Duplicate dependency group names"):
         DependencyGroupResolver(groups)
 
 
-def test_lookup_catches_bad_type():
+def test_lookup_catches_bad_type() -> None:
     groups = {"test": ["pytest"]}
     resolver = DependencyGroupResolver(groups)
     with pytest.raises(TypeError):
-        resolver.lookup(0)
+        resolver.lookup(0)  # type: ignore[arg-type]
 
 
-def test_lookup_on_trivial_normalization():
+def test_lookup_on_trivial_normalization() -> None:
     groups = {"test": ["pytest"]}
     resolver = DependencyGroupResolver(groups)
     parsed_group = resolver.lookup("Test")
@@ -34,8 +40,8 @@ def test_lookup_on_trivial_normalization():
     assert req.name == "pytest"
 
 
-def test_lookup_with_include_result():
-    groups = {
+def test_lookup_with_include_result() -> None:
+    groups: Groups = {
         "test": ["pytest", {"include-group": "runtime"}],
         "runtime": ["click"],
     }
@@ -50,8 +56,8 @@ def test_lookup_with_include_result():
     assert parsed_group[1].include_group == "runtime"
 
 
-def test_lookup_does_not_trigger_cyclic_include():
-    groups = {
+def test_lookup_does_not_trigger_cyclic_include() -> None:
+    groups: Groups = {
         "group1": [{"include-group": "group2"}],
         "group2": [{"include-group": "group1"}],
     }
@@ -63,8 +69,8 @@ def test_lookup_does_not_trigger_cyclic_include():
     assert parsed_group[0].include_group == "group2"
 
 
-def test_expand_contract_model_only_does_inner_lookup_once():
-    groups = {
+def test_expand_contract_model_only_does_inner_lookup_once() -> None:
+    groups: Groups = {
         "root": [
             {"include-group": "mid1"},
             {"include-group": "mid2"},
@@ -97,8 +103,8 @@ def test_expand_contract_model_only_does_inner_lookup_once():
         assert len(leaf_calls) == 1
 
 
-def test_no_double_parse():
-    groups = {
+def test_no_double_parse() -> None:
+    groups: Groups = {
         "test": [{"include-group": "runtime"}],
         "runtime": ["click"],
     }
@@ -132,9 +138,9 @@ def test_no_double_parse():
 @pytest.mark.parametrize("group_name_declared", ("foo-bar", "foo_bar", "foo..bar"))
 @pytest.mark.parametrize("group_name_used", ("foo-bar", "foo_bar", "foo..bar"))
 def test_normalized_name_is_used_for_include_group_lookups(
-    group_name_declared, group_name_used
-):
-    groups = {
+    group_name_declared: str, group_name_used: str
+) -> None:
+    groups: Groups = {
         group_name_declared: ["spam"],
         "eggs": [{"include-group": group_name_used}],
     }
