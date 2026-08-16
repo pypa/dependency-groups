@@ -65,6 +65,17 @@ environments = [
 ]
 
 
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = ["-ra", "--showlocals", "--strict-markers", "--strict-config"]
+xfail_strict = true
+filterwarnings = ["error"]
+log_level = "INFO"
+testpaths = [
+  "tests",
+]
+
+
 [tool.coverage.run]
 parallel = true
 source = ["dependency_groups"]
